@@ -18,7 +18,7 @@ resource "aws_guardduty_detector" "main" {
 
 # SNS Topic
 resource "aws_sns_topic" "security_alerts" {
-  name = "emine-security-alerts"
+  name = "security-alerts"
 }
 
 # SNS Email Subscription
@@ -30,7 +30,7 @@ resource "aws_sns_topic_subscription" "email" {
 
 # S3 Bucket for CloudTrail
 resource "aws_s3_bucket" "cloudtrail" {
-  bucket        = "emine-cloudtrail-logs-2026"
+  bucket        = "cloudtrail-logs-2026"
   force_destroy = true
 }
 
@@ -73,7 +73,7 @@ resource "aws_s3_bucket_policy" "cloudtrail" {
 
 # CloudTrail
 resource "aws_cloudtrail" "main" {
-  name                          = "emine-cloudtrail"
+  name                          = "cloudtrail"
   s3_bucket_name                = aws_s3_bucket.cloudtrail.id
   include_global_service_events = true
   is_multi_region_trail         = true
@@ -82,13 +82,13 @@ resource "aws_cloudtrail" "main" {
   depends_on = [aws_s3_bucket_policy.cloudtrail]
 
   tags = {
-    Name = "emine-cloudtrail"
+    Name = "cloudtrail"
   }
 }
 
 # EventBridge Rule for GuardDuty
 resource "aws_cloudwatch_event_rule" "guardduty" {
-  name        = "emine-guardduty-findings"
+  name        = "guardduty-findings"
   description = "Capture GuardDuty findings"
 
   event_pattern = jsonencode({
